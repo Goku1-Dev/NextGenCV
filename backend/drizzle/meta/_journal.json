@@ -15,6 +15,13 @@
       "when": 1750601307614,
       "tag": "0001_lively_johnny_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750673979251,
+      "tag": "0002_blue_fallen_one",
+      "breakpoints": true
     }
   ]
 }

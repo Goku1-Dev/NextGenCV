@@ -1,179 +1,197 @@
 import express from 'express';
 import cors from 'cors';
 import { createUser } from './Users/create.js'; 
-import { getUserById, getUserByEmail, getAllUsers } from './Users/read.js';
-import { updateUser, updateUserEmail, updateUserPassword } from './Users/update.js';
-import { deleteUser, deleteUserByEmail } from './Users/delete.js';
+import { getUserById, getAllUsers, getUserByEmail } from './Users/read.js';
+import { updateUser } from './Users/update.js';
+import { deleteUser } from './Users/delete.js';
+import { authenticateUser } from './Users/auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Health check endpoint (MOVED BEFORE PARAMETERIZED ROUTES)
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'Server is running',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// CREATE - Create a new user
-app.post('/users', async (req, res) => {
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-        return res.status(400).json({
+// Sign-up endpoint
+app.post('/user_signup', async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        
+        // Validate required fields
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Name, email, and password are required'
+            });
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Please provide a valid email address'
+            });
+        }
+        
+        // Validate password strength
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: 'Password must be at least 6 characters long'
+            });
+        }
+        
+        // Check if user already exists
+        const existingUser = await getUserByEmail(email);
+        if (existingUser.success) {
+            return res.status(409).json({
+                success: false,
+                error: 'User with this email already exists'
+            });
+        }
+        
+        // Create new user
+        const result = await createUser(name, email, password);
+        
+        if (result.success) {
+            // Don't send password in response
+            const { password: _, ...userWithoutPassword } = result.user;
+            res.status(201).json({
+                success: true,
+                message: 'User created successfully',
+                user: userWithoutPassword
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                error: result.error
+            });
+        }
+    } catch (error) {
+        console.error('Sign-up error:', error);
+        res.status(500).json({
             success: false,
-            error: 'Email and password are required'
+            error: 'Internal server error'
         });
     }
-    
-    const result = await createUser(email, password);
-    
-    if (result.success) {
-        res.status(201).json(result);
-    } else {
-        res.status(400).json(result);
+});
+
+// Sign-in endpoint
+app.post('/user_signin', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        // Validate required fields
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email and password are required'
+            });
+        }
+        
+        // Authenticate user
+        const result = await authenticateUser(email, password);
+        
+        if (result.success) {
+            res.status(200).json({
+                success: true,
+                message: 'Sign-in successful',
+                user: result.user
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                error: result.error
+            });
+        }
+    } catch (error) {
+        console.error('Sign-in error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error'
+        });
     }
 });
 
-// READ - Get all users (MOVED BEFORE PARAMETERIZED ROUTES)
+// Additional user management endpoints
 app.get('/users', async (req, res) => {
-    const result = await getAllUsers();
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(500).json(result);
-    }
-});
-
-// READ - Get user by email (SPECIFIC ROUTE BEFORE GENERIC :id ROUTE)
-app.get('/users/email/:email', async (req, res) => {
-    const { email } = req.params;
-    const result = await getUserByEmail(email);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(404).json(result);
-    }
-});
-
-// DELETE - Delete user by email (SPECIFIC ROUTE BEFORE GENERIC :id ROUTE)
-app.delete('/users/email/:email', async (req, res) => {
-    const { email } = req.params;
-    const result = await deleteUserByEmail(email);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(404).json(result);
-    }
-});
-
-// UPDATE - Update user email only
-app.patch('/users/:id/email', async (req, res) => {
-    const { id } = req.params;
-    const { email } = req.body;
-    
-    if (!email) {
-        return res.status(400).json({
+    try {
+        const result = await getAllUsers();
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(500).json(result);
+        }
+    } catch (error) {
+        console.error('Get users error:', error);
+        res.status(500).json({
             success: false,
-            error: 'Email is required'
+            error: 'Internal server error'
         });
     }
-    
-    const result = await updateUserEmail(id, email);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(400).json(result);
-    }
 });
 
-// UPDATE - Update user password only
-app.patch('/users/:id/password', async (req, res) => {
-    const { id } = req.params;
-    const { password } = req.body;
-    
-    if (!password) {
-        return res.status(400).json({
-            success: false,
-            error: 'Password is required'
-        });
-    }
-    
-    const result = await updateUserPassword(id, password);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(400).json(result);
-    }
-});
-
-// READ - Get user by ID
 app.get('/users/:id', async (req, res) => {
-    const { id } = req.params;
-    const result = await getUserById(id);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(404).json(result);
+    try {
+        const { id } = req.params;
+        const result = await getUserById(id);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json(result);
+        }
+    } catch (error) {
+        console.error('Get user error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error'
+        });
     }
 });
 
-// UPDATE - Update user
 app.put('/users/:id', async (req, res) => {
-    const { id } = req.params;
-    const updates = req.body;
-    
-    const result = await updateUser(id, updates);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(400).json(result);
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+        
+        const result = await updateUser(id, updates);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json(result);
+        }
+    } catch (error) {
+        console.error('Update user error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error'
+        });
     }
 });
 
-// DELETE - Delete user by ID
 app.delete('/users/:id', async (req, res) => {
-    const { id } = req.params;
-    const result = await deleteUser(id);
-    
-    if (result.success) {
-        res.status(200).json(result);
-    } else {
-        res.status(404).json(result);
+    try {
+        const { id } = req.params;
+        const result = await deleteUser(id);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json(result);
+        }
+    } catch (error) {
+        console.error('Delete user error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error'
+        });
     }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        error: 'Something went wrong!'
-    });
-});
-
-// 404 handler - Using a safer approach
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        error: 'Route not found'
-    });
-});
-
-// Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

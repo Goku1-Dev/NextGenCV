@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+:root {
+    --background-primary: #111827;
+    --background-secondary: #f9fafb;
+
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-color: #374151;
+
+    --borderline-primary:#ff5532;
+    --borderline-secondary: #fca311;
+
+    --box-color: #ffffff;
+
+    --card-background: #0c211d;
+    
+    --border-color: #d1d5db;
+    --menu-hover: #ffffff;
+    --menu-active: #e5e7eb;
+
+    --icon: #c4c4c4;
+
+    // Gradient
+    --gradient: linear-gradient(-45deg, #000116, #001249, #03051B, #040E2F);
+    
+    // Transition
+    --transition: background-color 1.3s ease, color 1.3s ease, border-color 1.3s ease;
+    
+    // Gutter
+    --gutter: calc(100% * 8 / 10);
+}

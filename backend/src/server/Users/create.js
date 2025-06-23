@@ -3,7 +3,7 @@ import { userSchema } from '../../db/schema.js';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 
-export const createUser = async (email, password) => {
+export const createUser = async (name, email, password) => {
     try {
         // Hash the password
         const saltRounds = 10;
@@ -15,16 +15,19 @@ export const createUser = async (email, password) => {
         // Insert user into database
         const newUser = await db.insert(userSchema).values({
             id: userId,
+            name: name,
             email: email,
             password: hashedPassword
-        }).returning();
+        }).returning({
+            id: userSchema.id,
+            name: userSchema.name,
+            email: userSchema.email
+            // Note: password is intentionally excluded from the return
+        });
         
         return {
             success: true,
-            user: {
-                id: newUser[0].id,
-                email: newUser[0].email
-            }
+            user: newUser[0]
         };
     } catch (error) {
         console.error('Error creating user:', error);

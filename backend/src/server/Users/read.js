@@ -7,6 +7,7 @@ export const getUserById = async (id) => {
     try {
         const user = await db.select({
             id: userSchema.id,
+            name: userSchema.name,
             email: userSchema.email
         }).from(userSchema).where(eq(userSchema.id, id));
         
@@ -63,6 +64,7 @@ export const getAllUsers = async () => {
     try {
         const users = await db.select({
             id: userSchema.id,
+            name: userSchema.name,
             email: userSchema.email
         }).from(userSchema);
         

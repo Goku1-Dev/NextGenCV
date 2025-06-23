@@ -1,0 +1,462 @@
+.SignUp_In_Container {
+    width: 100%;
+    height: 100vh;
+
+    .SignUp_In_Wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+
+        // Left Side - Sign In Form
+        .SignUp_In_Left {
+        width: 50%;
+        height: 100%;
+        background-color: var(--background-secondary);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 2rem 4rem;
+
+        @media (max-width: 1024px) {
+            padding: 2rem;
+        }
+
+        .logo_section {
+            margin-bottom: 3rem;
+
+            .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .logo_icon {
+                width: 2rem;
+                height: 2rem;
+                background-color: var(--text-primary);
+                transform: rotate(45deg);
+                position: relative;
+
+                .logo_inner {
+                position: absolute;
+                inset: 0.25rem;
+                background-color: var(--background-secondary);
+                transform: rotate(-45deg);
+                }
+            }
+
+            .logo_text {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+            }
+        }
+
+        .form_section {
+            max-width: 24rem;
+            width: 100%;
+
+            .form_title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            }
+
+            .form_fields {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+
+            .input_group {
+                display: flex;
+                flex-direction: column;
+
+                .input_label {
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: var(--text-color);
+                margin-bottom: 0.5rem;
+                }
+
+                .input_field {
+                position: relative;
+
+                .form_input {
+                    width: 100%;
+                    padding: 0.75rem 1rem;
+                    padding-right: 3rem;
+                    border: 1px solid var(--border-color);
+                    border-radius: 0.5rem;
+                    font-size: 1rem;
+                    transition: var(--transition);
+                    background-color: var(--box-color);
+                    box-sizing: border-box;
+
+                    &:focus {
+                    outline: none;
+                    border-color: var(--text-primary);
+                    box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.1);
+                    }
+
+                    &::placeholder {
+                    color: #9ca3af;
+                    }
+                }
+
+                .input_icon {
+                    position: absolute;
+                    right: 0.75rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    color: #9ca3af;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .icon {
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    }
+
+                    &.input_icon_button {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    padding: 0;
+                    color: #9ca3af;
+                    transition: var(--transition);
+
+                    &:hover {
+                        color: var(--text-primary);
+                    }
+
+                    &:focus {
+                        outline: none;
+                        color: var(--text-primary);
+                    }
+                    }
+                }
+                }
+            }
+            }
+
+            .signin_button {
+            width: 100%;
+            background-color: var(--text-primary);
+            color: var(--box-color);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+
+            &:hover {
+                background-color: #0f172a;
+                transform: translateY(-1px);
+            }
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.2);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+            }
+
+            .form_signup {
+            text-align: center;
+
+            .signup_link {
+                font-size: 0.875rem;
+                color: var(--text-color);
+                margin-bottom: 0.5rem;
+
+                a {
+                color: var(--text-primary);
+                text-decoration: none;
+                font-weight: 500;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+                }
+            }
+
+            .forgot_link {
+                display: block;
+                font-size: 0.875rem;
+                color: var(--text-primary);
+                text-decoration: none;
+                margin-top: 0.5rem;
+
+                &:hover {
+                text-decoration: underline;
+                }
+            }
+            }
+        }
+        }
+
+        // Right Side - Welcome Section
+        .SignUp_In_Right {
+        width: 50%;
+        height: 100%;
+        background-color: var(--background-primary);
+        color: var(--box-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 4rem;
+        position: relative;
+        overflow: hidden;
+
+        @media (max-width: 1024px) {
+            padding: 0 2rem;
+        }
+
+        .bg_pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+
+            .pattern_shape {
+            position: absolute;
+            border: 2px solid var(--box-color);
+
+            &.pattern_1 {
+                top: 5rem;
+                right: 5rem;
+                width: 8rem;
+                height: 8rem;
+                transform: rotate(45deg);
+            }
+
+            &.pattern_2 {
+                bottom: 8rem;
+                left: 5rem;
+                width: 6rem;
+                height: 6rem;
+                transform: rotate(12deg);
+            }
+
+            &.pattern_3 {
+                top: 50%;
+                right: 33%;
+                width: 4rem;
+                height: 4rem;
+                background-color: var(--box-color);
+                transform: rotate(45deg);
+            }
+            }
+        }
+
+        .right_logo {
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 10;
+
+            .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .logo_icon {
+                width: 2rem;
+                height: 2rem;
+                background-color: var(--box-color);
+                transform: rotate(45deg);
+                position: relative;
+
+                &.white {
+                background-color: var(--box-color);
+                }
+
+                .logo_inner {
+                position: absolute;
+                inset: 0.25rem;
+                background-color: var(--background-primary);
+                transform: rotate(-45deg);
+
+                &.dark {
+                    background-color: var(--background-primary);
+                }
+                }
+            }
+
+            .logo_text {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--box-color);
+            }
+            }
+        }
+
+        .welcome_content {
+            position: relative;
+            z-index: 10;
+            max-width: 28rem;
+
+            .welcome_title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+
+            @media (max-width: 1024px) {
+                font-size: 2rem;
+            }
+            }
+
+            .welcome_description {
+            color: #d1d5db;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            }
+
+            .welcome_stats {
+            color: #9ca3af;
+            margin-bottom: 3rem;
+            }
+
+            .cta_card {
+            background-color: rgba(55, 65, 81, 0.8);
+            border-radius: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+
+            .cta_title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                line-height: 1.3;
+            }
+
+            .cta_description {
+                color: #d1d5db;
+                font-size: 0.875rem;
+                line-height: 1.5;
+                margin-bottom: 1.5rem;
+            }
+
+            .avatar_stack {
+                display: flex;
+                margin-left: -0.5rem;
+
+                .avatar {
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: 50%;
+                border: 2px solid #374151;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.875rem;
+                font-weight: 500;
+                margin-left: -0.5rem;
+                color: white;
+
+                &.avatar_1 {
+                    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+                }
+
+                &.avatar_2 {
+                    background: linear-gradient(135deg, #4ade80, #22c55e);
+                }
+
+                &.avatar_3 {
+                    background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+                }
+
+                &.avatar_4 {
+                    background: linear-gradient(135deg, #fb923c, #f97316);
+                }
+
+                &.avatar_more {
+                    background-color: #4b5563;
+                    font-size: 0.75rem;
+                }
+                }
+            }
+            }
+        }
+        }
+    }
+}
+
+
+// Add these styles to your existing index.scss file
+
+// Error state for input fields
+.input_field {
+    position: relative;
+    
+    &.error {
+        .form_input {
+        border: 2px solid #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        .input_icon {
+        .icon {
+            color: #ef4444;
+        }
+        }
+    }
+}
+
+// Error tooltip
+.error_tooltip {
+    position: absolute;
+    top: -45px;
+    left: 0;
+    right: 0;
+    background-color: #ef4444;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideInTooltip 0.2s ease-out;
+
+    // Tooltip arrow
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 20px;
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #ef4444;
+    }
+}
+
+// Tooltip animation
+@keyframes slideInTooltip {
+from {
+    opacity: 0;
+    transform: translateY(-5px);
+}
+to {
+    opacity: 1;
+    transform: translateY(0);
+}
+}
+
+// Ensure input fields have proper positioning for tooltips
+.input_group {
+    position: relative;
+}
