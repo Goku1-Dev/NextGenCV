@@ -452,7 +452,7 @@ const SignUp_In = () => {
                             Join us and craft your career story today.
                         </p>
                         <p className="welcome_stats">
-                            More than 17k people joined us, it's your turn
+                            More than 10+ people are using NextGenCV, it's your turn
                         </p>
 
                         <div className="cta_card">
