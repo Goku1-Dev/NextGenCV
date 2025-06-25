@@ -1,0 +1,29 @@
+@keyframes slide-in-down {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out-up {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.slide-in-down {
+    animation: slide-in-down 0.4s forwards;
+}
+
+.slide-out-up {
+    animation: slide-out-up 0.4s forwards;
+}

@@ -19,33 +19,6 @@
 
         .logo_section {
             margin-bottom: 3rem;
-
-            .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-
-            .logo_icon {
-                width: 2rem;
-                height: 2rem;
-                background-color: var(--text-primary);
-                transform: rotate(45deg);
-                position: relative;
-
-                .logo_inner {
-                position: absolute;
-                inset: 0.25rem;
-                background-color: var(--background-secondary);
-                transform: rotate(-45deg);
-                }
-            }
-
-            .logo_text {
-                font-size: 1.25rem;
-                font-weight: 600;
-                color: var(--text-primary);
-            }
-            }
         }
 
         .form_section {

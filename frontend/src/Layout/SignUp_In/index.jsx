@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'
 import './index.scss'
+import Logo from '../../Components/Logo';
 
 const SignUp_In = () => {
     const [isSignUp, setIsSignUp] = useState(false)
@@ -256,12 +257,7 @@ const SignUp_In = () => {
             <div className='SignUp_In_Wrapper'>
                 <div className='SignUp_In_Left'>
                     <div className="logo_section">
-                        <div className="logo">
-                            <div className="logo_icon">
-                                <div className="logo_inner"></div>
-                            </div>
-                            <span className="logo_text">NextGenCV</span>
-                        </div>
+                        <Logo />
                     </div>
                     <div className='form_section'>
                         <h1 className="form_title">

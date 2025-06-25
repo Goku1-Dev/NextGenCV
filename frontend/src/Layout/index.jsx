@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TopBarMenuLinks, SideBarMenuLinks } from './data'
 import { Link } from 'react-router-dom'
 import './index.scss'
+import Logo from '../Components/Logo'
 
 const Layout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -70,7 +71,7 @@ const Layout = ({ children }) => {
                         </button>
                     )}
                     
-                    <div className='Layout_TopBar_Logo'>NextGenCV</div>
+                    <div className='Layout_TopBar_Logo'><Logo /></div>
                     
                     <div className='Layout_TopBar_Menu'>
                         <div className={`Layout_TopBar_MenuLinks ${isMobile ? 'mobile-hidden' : ''}`}>
