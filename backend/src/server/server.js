@@ -5,12 +5,14 @@ import { getUserById, getAllUsers, getUserByEmail } from './Users/read.js';
 import { updateUser } from './Users/update.js';
 import { deleteUser } from './Users/delete.js';
 import { authenticateUser } from './Users/auth.js';
+import { convertLatexToPdf, getPdfBuffer, cleanupFile as cleanupPdfFile } from './Converter/pdf_converter.js';
+import { convertLatexToWord, convertLatexToWordSimple, getWordBuffer, cleanupFile as cleanupWordFile } from './Converter/word_converter.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increased limit for LaTeX code
 
 // Sign-up endpoint
 app.post('/user_signup', async (req, res) => {
@@ -114,6 +116,142 @@ app.post('/user_signin', async (req, res) => {
     }
 });
 
+// LaTeX to PDF conversion endpoint
+app.post('/convert_pdf', async (req, res) => {
+    try {
+        const { latexCode } = req.body;
+        
+        // Validate required field
+        if (!latexCode) {
+            return res.status(400).json({
+                success: false,
+                error: 'LaTeX code is required'
+            });
+        }
+        
+        // Convert LaTeX to PDF
+        const result = await convertLatexToPdf(latexCode);
+        
+        if (result.success) {
+            // Get PDF buffer
+            const pdfBuffer = await getPdfBuffer(result.filePath);
+            
+            // Set headers for PDF download
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+            res.setHeader('Content-Length', pdfBuffer.length);
+            
+            // Send PDF file
+            res.send(pdfBuffer);
+            
+            // Clean up temporary file after sending
+            setTimeout(() => {
+                cleanupPdfFile(result.filePath);
+            }, 1000);
+            
+        } else {
+            res.status(500).json({
+                success: false,
+                error: result.error
+            });
+        }
+    } catch (error) {
+        console.error('PDF conversion error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error during PDF conversion'
+        });
+    }
+});
+
+// LaTeX to Word conversion endpoint
+app.post('/convert_word', async (req, res) => {
+    try {
+        const { latexCode, simple = false } = req.body;
+        
+        // Validate required field
+        if (!latexCode) {
+            return res.status(400).json({
+                success: false,
+                error: 'LaTeX code is required'
+            });
+        }
+        
+        // Convert LaTeX to Word
+        const result = simple 
+            ? await convertLatexToWordSimple(latexCode)
+            : await convertLatexToWord(latexCode);
+        
+        if (result.success) {
+            // Get Word document buffer
+            const wordBuffer = await getWordBuffer(result.filePath);
+            
+            // Set headers for Word document download
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+            res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+            res.setHeader('Content-Length', wordBuffer.length);
+            
+            // Send Word document file
+            res.send(wordBuffer);
+            
+            // Clean up temporary file after sending
+            setTimeout(() => {
+                cleanupWordFile(result.filePath);
+            }, 1000);
+            
+        } else {
+            res.status(500).json({
+                success: false,
+                error: result.error
+            });
+        }
+    } catch (error) {
+        console.error('Word conversion error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error during Word conversion'
+        });
+    }
+});
+
+// LaTeX validation endpoint (optional - to check if LaTeX code is valid)
+app.post('/validate_latex', async (req, res) => {
+    try {
+        const { latexCode } = req.body;
+        
+        if (!latexCode) {
+            return res.status(400).json({
+                success: false,
+                error: 'LaTeX code is required'
+            });
+        }
+        
+        // Try to convert to PDF to validate
+        const result = await convertLatexToPdf(latexCode);
+        
+        if (result.success) {
+            // Clean up the generated PDF since we only wanted to validate
+            cleanupPdfFile(result.filePath);
+            
+            res.status(200).json({
+                success: true,
+                message: 'LaTeX code is valid'
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                error: `LaTeX validation failed: ${result.error}`
+            });
+        }
+    } catch (error) {
+        console.error('LaTeX validation error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error during validation'
+        });
+    }
+});
+
 // Additional user management endpoints
 app.get('/users', async (req, res) => {
     try {
@@ -190,6 +328,15 @@ app.delete('/users/:id', async (req, res) => {
             error: 'Internal server error'
         });
     }
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
+    });
 });
 
 app.listen(PORT, () => {
